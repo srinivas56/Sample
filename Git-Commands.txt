@@ -1,0 +1,84 @@
+Clone the remote git repository
+Copy the remote repository SSH/URL from repository
+git clone {Remote Repository SSH}
+eg: git clone ssh://git@git.swf.daimler.com:7999/username/service-call.git
+
+
+Check/Add Remote  to the current local repository
+
+git remote -v //To check the current remotes
+git remote add {upstream/origin} {URL of the remote}
+eg: git remote add upstream ssh://git@git.swf.daimler.com:7999/username/service-call.git
+
+
+Push local changes to the remote branch
+
+Do changes in the local files.
+git add . // Add all files to the staging
+git commit -s -m "Commit Message"
+git push {remote name} {remote branch name} -f(forcefully push) // Push the local current branch to the mentioned remote branch.
+eg: git push origin master -f
+
+
+Rebase local current branch with remote branch and resolve conflicts(IF ANY)
+
+git pull {Remote Name} {remote branch name} --rebase
+eg: git pull upstream master --rebase //Rebase the remote branch into local current branch
+If conflicts occur, Open version control tab in vscode, for each file in changes section, resolve conflicts, save the file and Add that file  using + sign.
+After resolving all conflicts. to continue the rebase, execute
+git rebase --continue    
+continue above mentioned conflicts resolution step until rebase successful. 
+To abort/cancel the rebase and to remain at original state, execute
+git rebase --abort
+
+
+Checkout new branch from specific local branch
+
+git checkout -b new_branch existing_branch
+git checkout -b "new_barnch"  // checkout new branch from current branch(head)
+
+
+Checkout new branch from specific branch of remote
+
+git fetch origin // Fetch all branches from origin
+git checkout -b {New local branch name} {remote name}/{remote branch name}
+eg: git checkout -b master origin/master 
+
+
+Check remote tracking branches for local branches and set remote tracking branch for local branch
+
+git branch -vv // check all remote tracking branches
+git branch --set-upstream-to={remote name}/remote_branch local_branch // Set local branch to track remote branch
+eg: git branch --set-upstream-to=origin/dunfell dunfell
+
+
+Squash git commits(Interactive rebase) on current branch
+
+git rebase -i HEAD~{Number of commits to squash}
+eg: git rebase -i HEAD~3
+once editor opened, put s/squash before all commits to squash, save and close editor.
+and again new editor will be opened, comment squashed commits commit messages, save and close editor.
+Done
+
+
+Amend the git commits
+
+git rebase -i HEAD~1
+once editor opened, put e before commit to amend, save and close editor.
+git commit --amend
+do your changes, save and close the editor
+git rebase --continue
+
+
+Reset git local branch to remote branch by discarding all local changes
+
+git fetch origin //to bring all remote changes to local
+git reset --hard {remote name}/{remote branch name}
+eg: git reset --hard origin/master // reset the local current branch to remote origin/master
+
+
+Cancel/undo git rebase, git squash, git commit, interactive rebase
+
+git reflog // It will shows all heads including squashed commits.
+Select your desired head from the reflog result like "HEAD@{2}" 
+eg: git reset --hard HEAD@{2}
