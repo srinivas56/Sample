@@ -1,0 +1,13 @@
+<!-- This is an MSBuild properties file for projects which use Dotfuscator's MSBuild components.
+     For details, see <https://www.preemptive.com/dotfuscator/pro/userguide/en/interfaces_msbuild.html#user>.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <!-- Path where Dotfuscator's MSBuild components are installed. -->
+        <DotfuscatorMSBuildDir>/Users/srinitm/tabfreemode866/TabletRSEApp/packages/PreEmptive.Protection.Dotfuscator.Pro.6.1.0/tools/msbuilddir</DotfuscatorMSBuildDir>
+        <!-- License string for Dotfuscator. -->
+        <DotfuscatorLicense>94382D64ED68ED9854164DA5A212185E</DotfuscatorLicense>
+    </PropertyGroup>
+</Project>
+
+
