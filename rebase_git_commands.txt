@@ -1,0 +1,116 @@
+ git push origin master
+$ git pull upstream master --rebase
+$ git rebase --abort
+$ git pull upstream --rebase
+$ git remote -v
+$ git remote add upstream ssh://git@git.swf.daimler.com:7999/apricot/remote-manager-wlan-gateway.git
+
+-------------------------------------------------------------------------------------------------------
+
+Dummy commit without any changes(To trigger jenkins):
+git commit --amend --no-edit
+git push -f
+
+----------------------------------------------------------------------------------------------------------
+Upstream repo ---> Apricot(From where we have forked)
+Origin ---> Our forked repo(From where we have cloned)
+
+git remote -v -----> Show origin and upstream repos
+
+git remote add upstream ssh://git@git.swf.daimler.com:7999/apricot/remote-manager-wlan-gateway.git ----> Setting upstream repo
+
+git remote add origin <origin_path> -----> Setting origin repo
+
+git remote add origin master
+
+git pull upstream master --rebase
+
+Whenever you have conflicts, go to Visual Studio -> Source Control -> Merge Changes -> Solve the conflicts -> Save and Stage the Changes, then again perform
+git rebase --continue 
+Repeat the same steps again till rebase is succesfull.
+
+git push -f
+
+
+git rebase --abort ---------> To stop rebasing and go back to initial stage.
+
+
+-------------------------------------------------------------------------------------------------------
+
+git log --oneline ---> Showing git commits logs in single line(https://careerkarma.com/blog/git-log/)
+
+------------------------------------------------------------------------------------------------------------
+
+Squashing many commits to Single Commit :
+git rebase -i Head~6
+Then, change pick--->s which ever commits to be merged and save and quit
+Then, Using # comment out the commit messages whichever is not required and use only one commit message.
+git push -f
+
+------------------------------------------------------------------------------------------------------------
+
+Deleting commits in the local :
+git reflog
+
+We get the logs, then select which last commit is required
+
+git reset --hard HEAD@{<number>} -----> HEAD@{number} can be copied that is present next to commit message in the log.
+
+
+----------------------------------------------------------------------------------------------------------------
+
+Changing committed files: To add modified files to the previous commit itself instead of creating new commit
+
+git add --all
+git commit --amend --no-edit
+git push -f
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+Creating patch (Whenever you want to rebase to upstream branch but you have local changes already made, 
+you can create patch file and apply back patch after pulling from upstream repo)
+
+git diff <filename>.patch    Ex : git diff > test.patch
+git checkout . --------------> Revert all local changes
+git pull upstream master --rebase
+git push -f
+git apply test.patch   ------> Whatever local changes you has saved in patch will be put back to the code
+rm test.patch   -------> Delete the patch file.
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+To push local changes to new branch without affecting the master branch:
+git status
+git stash ----> It will keep all your local changes in the stack and will be removed locally
+git fetch ----> It will fetch all the new branches to local from remote
+git pull ----> it will pull changes from the master branch, if any changes present
+git checkout <branch_name>  ----> It will change the branch
+git stash pop ----> It will pop out, whatever was saved in the stack
+git add --all
+git commit -m "Message"
+git push -f
+
+
+CMD Commands :
+
+gci env:* | sort-object name --> for getting all environment variables
+git config --list --> to get config list
+
+
+
+Docker :
+
+1. docker login artifact.swf.daimler.com
+2. docker build --network host -t latest_apricot_image .
+3. docker run --privileged -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v ${pwd}:/wlangateway latest_apricot_image
+
+To copy from host to Docker:
+docker cp <source_path> <container_id>:/<destination_path>
+Ex: docker cp variantcoding_v1-7-2.dat 7c411966cdf1:/mnt/vcdata/variantcoding_v1-7-2.dat
+
+To copy from docker to host:
+docker cp <container_id>:/<source_path> <destination_path>
+Ex: docker cp 7c411966cdf1:/mnt/vcdata/variantcoding_v1-7-2.dat .
