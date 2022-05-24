@@ -114,3 +114,56 @@ Ex: docker cp variantcoding_v1-7-2.dat 7c411966cdf1:/mnt/vcdata/variantcoding_v1
 To copy from docker to host:
 docker cp <container_id>:/<source_path> <destination_path>
 Ex: docker cp 7c411966cdf1:/mnt/vcdata/variantcoding_v1-7-2.dat .
+
+---------------------------------------------------------------------------------------------------------------
+Bitbake Steps:
+
+
+Repo-Sync:
+repo sync -j1
+
+Bitbaking:
+export TEMPLATECONF=$PWD/sources/meta-mbient/meta-apricot/conf/variant/balboa
+source sources/poky/oe-init-build-env
+bitbake remote-manager-service
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Copy files from Local Windows Machine to Remote System:
+scp D:/TxtFile.txt root@ipaddress:/home/usr/
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+VDI- Address: SSALIAN@53.127.147.123
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Connect vdi pool8 & develop using vscode:
+
+
+Please take backup of files of your existing files. Path in mac for these files is /Users/<short id>/.ssh
+This path might be different for windows.
+
+Use below commands after replacing these files:
+1.	ssh SSALIAN@53.127.147.123
+2.	sudo docker context create remote-docker-machine --docker "host=ssh://SSALIAN@53.127.147.123"
+3.	sudo docker run --name anosh_mbient --privileged -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v ~/source-code:/source_code -v ~/apricot:/apricot mbient_img bash
+
+anosh_mbient is the container dedicated for me. 
+So login to VDI pool8 make sure using same container image, create new container for your work & better use name of container like <yourName>_<which Image mbient/apricot>
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+  
+Generate ssh-keygen and copy to remote ssh machine, so that it will not ask for Password each and every time:
+
+In powershell:	
+ssh-keygen (It will be generated in the home directory in the .ssh folder)
+Go to .ssh folder and then if .ssh is already present then execute the below command, else first create .ssh in remote system and then execute the below command,
+cat ~/.ssh/id_rsa.pub | ssh SSALIAN@53.127.147.123 "cat >> ~/.ssh/authorized_keys"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+If Unable to start bitbake server: 
+Just try this in your build folder: rm -rf bitbake.lock this shoud work
+
+The reason for this is the state of the bitbake is locked during last bitbake execution(Forcefully stopped the bitbake process with ctrl+c). 
+Once you stop intermittently, we need to remove the bitbake.lock
