@@ -72,7 +72,7 @@ git push -f
 Creating patch (Whenever you want to rebase to upstream branch but you have local changes already made, 
 you can create patch file and apply back patch after pulling from upstream repo)
 
-git diff <filename>.patch    Ex : git diff > test.patch
+git diff > <filename>.patch    Ex : git diff > test.patch
 git checkout . --------------> Revert all local changes
 git pull upstream master --rebase
 git push -f
@@ -107,6 +107,10 @@ Docker :
 2. docker build --network host -t latest_apricot_image .
 3. docker run --privileged -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v ${pwd}:/wlangateway latest_apricot_image
 
+If VDI doesn't download latest image from artifacts portal, then use this
+Instead of 2nd step above, 
+docker build --no-cache --pull --network host -t dunfell_image .
+
 To copy from host to Docker:
 docker cp <source_path> <container_id>:/<destination_path>
 Ex: docker cp variantcoding_v1-7-2.dat 7c411966cdf1:/mnt/vcdata/variantcoding_v1-7-2.dat
@@ -116,8 +120,13 @@ docker cp <container_id>:/<source_path> <destination_path>
 Ex: docker cp 7c411966cdf1:/mnt/vcdata/variantcoding_v1-7-2.dat .
 
 ---------------------------------------------------------------------------------------------------------------
-Bitbake Steps:
+Bitbake Steps:(https://wiki.swf.daimler.com/display/mbient/Steps+for+Rich+OS+Full+Build+on+Local+system)
 
+(for master branch)
+$ repo init -u ssh://git@git.swf.daimler.com:7999/apricot/apricot-manifests -b master -g apricotbscqal
+  
+(for dunfell branch)
+$ repo init -u ssh://git@git.swf.daimler.com:7999/apricot/apricot-manifests -b dunfell -g apricotbscqal
 
 Repo-Sync:
 repo sync -j1
@@ -126,7 +135,12 @@ Bitbaking:
 export TEMPLATECONF=$PWD/sources/meta-mbient/meta-apricot/conf/variant/balboa
 source sources/poky/oe-init-build-env
 bitbake remote-manager-service
+export PROD=1
 
+export PROD=0
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE PROD"
+ 
+TEMPLATECONF=$PWD/sources/meta-mbient/meta-apricot/conf/variant/balboa . sources/poky/oe-init-build-env build-balboa
 --------------------------------------------------------------------------------------------------------------------------------------------------
 
 Copy files from Local Windows Machine to Remote System:
@@ -146,7 +160,7 @@ This path might be different for windows.
 Use below commands after replacing these files:
 1.	ssh SSALIAN@53.127.147.123
 2.	sudo docker context create remote-docker-machine --docker "host=ssh://SSALIAN@53.127.147.123"
-3.	sudo docker run --name anosh_mbient --privileged -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v ~/source-code:/source_code -v ~/apricot:/apricot mbient_img bash
+3.	sudo docker run --name srinivas_apricot_0302 --privileged -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v ~/source-code:/source_code -v ~/apricot:/apricot apricot_api_302 bash
 
 anosh_mbient is the container dedicated for me. 
 So login to VDI pool8 make sure using same container image, create new container for your work & better use name of container like <yourName>_<which Image mbient/apricot>
@@ -167,3 +181,33 @@ Just try this in your build folder: rm -rf bitbake.lock this shoud work
 
 The reason for this is the state of the bitbake is locked during last bitbake execution(Forcefully stopped the bitbake process with ctrl+c). 
 Once you stop intermittently, we need to remove the bitbake.lock
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+If you are unable to copy or write in MTTF test bench, then docker
+
+mount -o remount, rw /
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+To change the user in MTTF from root to remote-manager-service
+
+su -s /bin/sh remote-manager
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C++ Tools (Build Essentials):
+
+g++ -> C++ compiler for x86_64
+
+gdb ./a.out-> GNU debugger
+
+gdb -tui ./a.out -> gdb with UI (compile with -g flag)
+
+nm ./a.out -> To print symbol table
+
+nm -demangle ./a.out -> To print demangled ouput
+
+valgrind ./a,out -> To check memory leakage
+
+strip -> strip the symbol table from executable or library
